@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Shizuka AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#35246e,#101126 55%,#070812);color:#fff;font-family:system-ui,Arial;min-height:100vh}
+header{padding:18px 16px;text-align:center;font-weight:800;font-size:22px;letter-spacing:1px;color:#f2dfff}
+.sub{text-align:center;color:#bdb5e9;font-size:12px;margin-top:-10px}
+main{max-width:620px;margin:auto;padding:18px}
+.orb{width:170px;height:170px;margin:22px auto;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#ffe8ff,#d27cff 20%,#7045e7 48%,#15183f 72%);box-shadow:0 0 24px #a64eff,0 0 65px #6633e8;animation:float 3s ease-in-out infinite}
+.face{font-size:75px;filter:drop-shadow(0 4px 7px #21113f)}@keyframes float{50%{transform:translateY(-7px) scale(1.025)}}
+.status{text-align:center;color:#d9ceff;margin:12px}.card{background:#ffffff0d;border:1px solid #bda5ff45;border-radius:18px;padding:14px;margin:14px 0;backdrop-filter:blur(10px)}
+#chat{height:230px;overflow:auto;display:flex;flex-direction:column;gap:9px}.msg{padding:10px 12px;border-radius:14px;max-width:90%;line-height:1.4}.bot{background:#5f43a8;align-self:flex-start}.user{background:#a72dbe;align-self:flex-end}
+.row{display:flex;gap:8px}input{min-width:0;flex:1;background:#15152e;color:white;border:1px solid #8b71ce;border-radius:12px;padding:12px;font-size:15px}button{border:0;border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,#bd55ef,#6757ef);color:white;font-weight:700;font-size:14px}button:active{transform:scale(.98)}.small{font-size:12px;color:#bcb6df;line-height:1.5}.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+</style></head>
+<body>
+<header>💜 SHIZUKA AI</header><div class="sub">YOUR ANIME AI COMPANION</div>
+<main>
+<div class="orb"><div class="face">🌸</div></div>
+<div class="status" id="status">Ready to chat ✨</div>
+<div class="card"><div id="chat"><div class="msg bot">Hi! I'm Shizuka. नमस्ते! मुझसे हिंदी या English में बात करो 😊</div></div></div>
+<div class="row"><input id="message" placeholder="Type a message…" autocomplete="off"><button onclick="send()">Send</button></div>
+<div class="actions" style="margin-top:10px"><button onclick="speakLast()">🔊 Speak</button><button onclick="listen()">🎙️ Voice input</button><button onclick="clearChat()">Clear chat</button></div>
+<div class="card small"><b>Prototype notice:</b> This starter APK contains a local demo conversation. A real AI model/API, always-on background wake word, and native phone controls are not connected yet. Voice input depends on Android WebView speech recognition support.</div>
+</main>
+<script>
+const chat=document.getElementById('chat'), statusEl=document.getElementById('status'), input=document.getElementById('message');
+let lastReply="Hi! I'm Shizuka. नमस्ते!";
+function add(text,cls){let d=document.createElement('div');d.className='msg '+cls;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+function replyFor(t){let s=t.toLowerCase();if(s.includes('hello')||s.includes('hi')||s.includes('नमस्ते'))return 'नमस्ते! 💜 मैं Shizuka हूँ। आज कैसी मदद करूँ?';if(s.includes('नाम')||s.includes('name'))return 'मेरा नाम Shizuka AI है 🌸';if(s.includes('time')||s.includes('समय'))return 'मैं अभी इस starter version में सही live time नहीं पढ़ सकती।';if(s.includes('who')||s.includes('कौन'))return 'मैं Shizuka AI का शुरुआती demo हूँ। Real AI जोड़ने पर मैं और सवालों के जवाब दे सकूँगी।';return 'मैंने तुम्हारा message सुना 😊 अभी यह demo mode है। असली AI जवाबों के लिए सुरक्षित AI API integration जोड़ना होगा।';}
+function send(){let t=input.value.trim();if(!t)return;add(t,'user');input.value='';statusEl.textContent='Thinking…';setTimeout(()=>{lastReply=replyFor(t);add(lastReply,'bot');statusEl.textContent='Ready to chat ✨';},350)}
+input.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+function speakLast(){if(!('speechSynthesis'in window)){statusEl.textContent='Text-to-speech not supported';return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(lastReply);u.lang='hi-IN';speechSynthesis.speak(u);statusEl.textContent='Speaking…';u.onend=()=>statusEl.textContent='Ready to chat ✨'}
+function listen(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){statusEl.textContent='Voice input not supported in this WebView';return}let r=new SR();r.lang='hi-IN';r.interimResults=false;r.onstart=()=>statusEl.textContent='Listening…';r.onresult=e=>{input.value=e.results[0][0].transcript;send()};r.onerror=()=>statusEl.textContent='Voice input unavailable';r.onend=()=>{if(statusEl.textContent==='Listening…')statusEl.textContent='Ready to chat ✨'};r.start()}
+function clearChat(){chat.innerHTML='';add('Chat cleared. नमस्ते, फिर से बात करें!','bot');lastReply='नमस्ते, फिर से बात करें!'}
+</script></body></html>
