@@ -23,10 +23,16 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Debug APK
+      -       - name: Build Debug APK
         run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          echo "Checking files..."
+          ls -la
+          if [ -f "./gradlew" ]; then
+            chmod +x ./gradlew
+            ./gradlew assembleDebug
+          else
+            gradle assembleDebug
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
