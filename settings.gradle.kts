@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ShizukaAI"
 include(":app")
+gradle wrapper
