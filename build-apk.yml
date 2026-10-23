@@ -35,3 +35,12 @@ jobs:
           name: Shizuka-AI-debug-APK
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+        
